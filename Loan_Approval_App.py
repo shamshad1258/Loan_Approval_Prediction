@@ -1,55 +1,38 @@
 import streamlit as st
-import pandas as pd
-import joblib
 import numpy as np
+import pickle
 
 # Load trained model
-model = joblib.load("Loan_Approval_model.pkl")
+model = pickle.load(open("Loan_Approval_model.pkl", "rb"))
 
 st.title("🏦 Loan Approval Prediction App")
 
 # -------- INPUTS --------
-no_of_dependents = st.number_input(
-    "Number of Dependents", min_value=0, step=1
-)
+no_of_dependents = st.number_input("Number of Dependents", min_value=0, step=1)
 
 education = st.selectbox(
     "Education",
-    options=["Graduate", "Not Graduate"]
+    ["Graduate", "Not Graduate"]
 )
 
 self_employed = st.selectbox(
     "Self Employed",
-    options=["Yes", "No"]
+    ["Yes", "No"]
 )
 
-income_annum = st.number_input(
-    "Annual Income", min_value=0, step=10000
-)
+income_annum = st.number_input("Annual Income", min_value=0, step=10000)
 
-loan_amount = st.number_input(
-    "Loan Amount", min_value=0, step=50000
-)
+loan_amount = st.number_input("Loan Amount", min_value=0, step=50000)
 
-loan_term = st.number_input(
-    "Loan Term (in months)", min_value=1, step=12
-)
+loan_term = st.number_input("Loan Term (in months)", min_value=1, step=12)
 
-cibil_score = st.number_input(
-    "CIBIL Score", min_value=300, max_value=900
-)
+cibil_score = st.number_input("CIBIL Score", min_value=300, max_value=900)
 
-residential_assets_value = st.number_input(
-    "Residential Assets Value", min_value=0
-)
+residential_assets_value = st.number_input("Residential Assets Value", min_value=0)
 
-commercial_assets_value = st.number_input(
-    "Commercial Assets Value", min_value=0
-)
+commercial_assets_value = st.number_input("Commercial Assets Value", min_value=0)
 
-luxury_assets_value = st.number_input(
-    "Luxury Assets Value", min_value=0
-)
+luxury_assets_value = st.number_input("Luxury Assets Value", min_value=0)
 
 # -------- ENCODING --------
 education = 1 if education == "Graduate" else 0
@@ -74,7 +57,4 @@ if st.button("Predict Loan Status"):
     prediction = model.predict(input_data)
 
     if prediction[0] == 1:
-        st.success("✅ Loan Approved")
-    else:
-        st.error("❌ Loan Rejected")
-
+        st.success("✅ Loan Approved"
