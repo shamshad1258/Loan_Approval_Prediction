@@ -1,14 +1,18 @@
+%%writefile app.py
 import streamlit as st
+import joblib
 import numpy as np
-import pickle
 
-# Load trained model
-model = pickle.load(open("Loan_Approval_model.pkl", "rb"))
+# Load trained model (pkl must be in same repo)
+model = joblib.load("Loan_Approval_model.pkl")
 
-st.title("🏦 Loan Approval Prediction App")
+st.title("🏦 Loan Approval Prediction")
+st.write("Fill the details and click Predict to check loan status")
 
 # -------- INPUTS --------
-no_of_dependents = st.number_input("Number of Dependents", min_value=0, step=1)
+no_of_dependents = st.number_input(
+    "Number of Dependents", min_value=0, max_value=10, step=1
+)
 
 education = st.selectbox(
     "Education",
@@ -20,19 +24,33 @@ self_employed = st.selectbox(
     ["Yes", "No"]
 )
 
-income_annum = st.number_input("Annual Income", min_value=0, step=10000)
+income_annum = st.number_input(
+    "Annual Income", min_value=0, step=10000
+)
 
-loan_amount = st.number_input("Loan Amount", min_value=0, step=50000)
+loan_amount = st.number_input(
+    "Loan Amount", min_value=0, step=50000
+)
 
-loan_term = st.number_input("Loan Term (in months)", min_value=1, step=12)
+loan_term = st.number_input(
+    "Loan Term (months)", min_value=1, step=12
+)
 
-cibil_score = st.number_input("CIBIL Score", min_value=300, max_value=900)
+cibil_score = st.number_input(
+    "CIBIL Score", min_value=300, max_value=900
+)
 
-residential_assets_value = st.number_input("Residential Assets Value", min_value=0)
+residential_assets_value = st.number_input(
+    "Residential Assets Value", min_value=0
+)
 
-commercial_assets_value = st.number_input("Commercial Assets Value", min_value=0)
+commercial_assets_value = st.number_input(
+    "Commercial Assets Value", min_value=0
+)
 
-luxury_assets_value = st.number_input("Luxury Assets Value", min_value=0)
+luxury_assets_value = st.number_input(
+    "Luxury Assets Value", min_value=0
+)
 
 # -------- ENCODING --------
 education = 1 if education == "Graduate" else 0
@@ -41,7 +59,7 @@ self_employed = 1 if self_employed == "Yes" else 0
 # -------- PREDICTION --------
 if st.button("Predict Loan Status"):
 
-    input_data = np.array([[
+    X = np.array([[
         no_of_dependents,
         education,
         self_employed,
@@ -54,9 +72,9 @@ if st.button("Predict Loan Status"):
         luxury_assets_value
     ]])
 
-    prediction = model.predict(input_data)
+    prediction = model.predict(X)[0]
 
-    if prediction[0] == 1:
+    if prediction == 1:
         st.success("✅ Loan Approved")
     else:
         st.error("❌ Loan Rejected")
